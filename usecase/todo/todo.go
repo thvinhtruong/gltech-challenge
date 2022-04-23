@@ -30,16 +30,12 @@ func (s *TodoService) GetTodoByID(id int) (*entity.Todo, error) {
 	return s.todoRepo.GetTodoByID(id)
 }
 
-func (s *TodoService) PatchTodo(id int) (*entity.Todo, error) {
-	todo, err := s.todoRepo.GetTodoByID(id)
+func (s *TodoService) PatchTodo(id int, t *entity.Todo) error {
+	err := s.todoRepo.PatchTodo(id, t)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	err = s.todoRepo.PatchTodo(todo)
-	if err != nil {
-		return nil, err
-	}
-	return todo, nil
+	return nil
 }
 
 func (s *TodoService) DeleteTodo(id int) error {

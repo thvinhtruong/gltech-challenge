@@ -4,16 +4,17 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	entity "github.com/thvinhtruong/legoha/entities"
 	"github.com/thvinhtruong/legoha/usecase/user"
 )
 
 func NewUserHandler(app fiber.Router, service user.UserUseCase) {
-	app.Post("/user", createUser(service))
+	app.Post("/", createUser(service))
 	app.Post("/login", loginUser(service))
-	app.Get("/user/all", listUsers(service))
-	app.Get("/user/:userId", getUser(service))
-	app.Patch("/user/:userId", patchUser(service))
-	app.Delete("/user/:userId", deleteUser(service))
+	app.Get("/all", listUsers(service))
+	app.Get("/:userId", getUser(service))
+	app.Patch("/:userId", patchUser(service))
+	app.Delete("/:userId", deleteUser(service))
 }
 
 func createUser(service user.UserUseCase) fiber.Handler {
@@ -90,8 +91,23 @@ func getUser(service user.UserUseCase) fiber.Handler {
 
 func patchUser(service user.UserUseCase) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		type UpdateDTO struct {
+			Name     string `json:"name"`
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+		var updateDTO UpdateDTO
+		err := c.BodyParser(&updateDTO)
+
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"status": "error",
+				"error":  err,
+			})
+		}
 		id, _ := strconv.Atoi(c.Params("userId"))
-		err := service.PatchUser(id)
+		user := &entity.User{Name: updateDTO.Name, Username: updateDTO.Username, Password: updateDTO.Password}
+		err = service.PatchUser(id, user)
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 				"status":       "error",

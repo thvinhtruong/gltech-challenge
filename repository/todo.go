@@ -68,9 +68,13 @@ func (r *Repository) GetTodoByID(id int) (*entity.Todo, error) {
 }
 
 // update todo information
-func (r *Repository) PatchTodo(t *entity.Todo) error {
-	todo := NewTodo(t)
-	err := r.DB.Model(&t).Where("id = ?", t.ID).Update(todo).Error
+func (r *Repository) PatchTodo(id int, t *entity.Todo) error {
+	var todo *entity.Todo
+	err := r.DB.First(&todo, id).Error
+	if err != nil {
+		return err
+	}
+	err = r.DB.Model(&todo).Updates(t).Error
 	r.DB.Save(&todo)
 	if err != nil {
 		return err

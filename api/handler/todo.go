@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	entity "github.com/thvinhtruong/legoha/entities"
 	"github.com/thvinhtruong/legoha/usecase/todo"
 )
 
@@ -90,17 +91,25 @@ func getTodo(service todo.TodoUseCase) fiber.Handler {
 
 func patchTodo(service todo.TodoUseCase) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		todoId, _ := strconv.Atoi(c.Params("todoId"))
-		todo, err := service.GetTodoByID(todoId)
+		type UpdateDTO struct {
+			Title       string `json:"title"`
+			Description string `json:"desc"`
+			Completed   bool   `json:"completed"`
+		}
+
+		var updateDTO UpdateDTO
+		err := c.BodyParser(&updateDTO)
+
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-				"status":       "error",
-				"error_detail": err,
-				"error":        err.Error(),
+				"status": "error",
+				"error":  err,
 			})
 		}
 
-		err = service.PatchTodo(todoId)
+		todoId, _ := strconv.Atoi(c.Params("todoId"))
+		todo := &entity.Todo{Description: updateDTO.Description, Title: updateDTO.Title, Completed: updateDTO.Completed}
+		err = service.PatchTodo(todoId, todo)
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 				"status":       "error",

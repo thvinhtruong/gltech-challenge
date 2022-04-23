@@ -4,6 +4,17 @@ Legoha is a simple and minimal Todolist api using Golang with Gorm and Fiber. Fo
 
 ## How to run ?
 
+Firstly, create a config.env file to hold the environment variables by:
+```makefile
+make 
+```
+Secondly, edit your DB_USER and DB_PASS for the username and password of the database config. Also install necessary go pakags by:
+
+``` go
+go mod tidy
+```
+
+Finally, run the application by:
 ```makefile
 make run
 ```

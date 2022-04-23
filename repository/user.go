@@ -80,13 +80,16 @@ func (r *Repository) GetUserByUsername(username string) (*entity.User, error) {
 }
 
 // update user infor
-func (r *Repository) PatchUser(u *entity.User) error {
-	user := NewUser(u)
-	err := r.DB.Model(&user).Where("id = ?", u.ID).Updates(&user).Error
+func (r *Repository) PatchUser(id int, u *entity.User) error {
+	var user entity.User
+	err := r.DB.First(&user, id).Error
 	if err != nil {
 		return err
 	}
-
+	err = r.DB.Model(&user).Updates(u).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -16,6 +16,8 @@ import (
 	"github.com/thvinhtruong/legoha/api/handler"
 	"github.com/thvinhtruong/legoha/persistent"
 	"github.com/thvinhtruong/legoha/repository"
+	"github.com/thvinhtruong/legoha/usecase/tasklist"
+	"github.com/thvinhtruong/legoha/usecase/todo"
 	"github.com/thvinhtruong/legoha/usecase/user"
 )
 
@@ -50,9 +52,18 @@ func Run(port int) {
 
 	user_repo := repository.NewUserRepository(repo.DB)
 	user_service := user.NewUserService(user_repo)
+	user_handler := app.Group("/user")
+	handler.NewUserHandler(user_handler, user_service)
 
-	api := app.Group("/")
-	handler.NewUserHandler(api, user_service)
+	todo_repo := repository.NewTodoRepository(repo.DB)
+	todo_service := todo.NewTodoService(todo_repo)
+	todo_handler := app.Group("/todo")
+	handler.NewTodoHandler(todo_handler, todo_service)
+
+	tasklist_repo := repository.NewTaskListRepository(repo.DB)
+	tasklist_service := tasklist.NewTaskService(tasklist_repo)
+	tasklist_handler := app.Group("/")
+	handler.NewAdminHandler(tasklist_handler, tasklist_service)
 
 	app.All("*", func(c *fiber.Ctx) error {
 		errorMessage := fmt.Sprintf("Route '%s' does not exist", c.OriginalURL())

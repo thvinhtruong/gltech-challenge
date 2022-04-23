@@ -36,12 +36,8 @@ func (s *UserService) GetUserById(id int) (*entity.User, error) {
 	return s.userRepo.GetUserByID(id)
 }
 
-func (s *UserService) PatchUser(id int) error {
-	u, err := s.userRepo.GetUserByID(id)
-	if err != nil {
-		return err
-	}
-	err = s.userRepo.PatchUser(u)
+func (s *UserService) PatchUser(id int, u *entity.User) error {
+	err := s.userRepo.PatchUser(id, u)
 	if err != nil {
 		return err
 	}
