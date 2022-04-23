@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/jinzhu/gorm"
 	entity "github.com/thvinhtruong/legoha/entities"
 )
 
@@ -14,16 +15,22 @@ func NewTodo(todo *entity.Todo) *entity.Todo {
 	return &t
 }
 
+func NewTodoRepository(db *gorm.DB) TodoRepository {
+	return &Repository{
+		DB: db,
+	}
+}
+
 func (r *Repository) IsTodoExists(id int) bool {
 	_, err := r.GetTodoByID(id)
 	return err == nil
 }
 
 // add a todo
-func (r *Repository) CreateNewTodo(entityTodo *entity.Todo) error {
-	t := NewTodo(entityTodo)
+func (r *Repository) CreateNewTodo(t *entity.Todo) error {
+	todo := NewTodo(t)
 
-	err := r.DB.Create(&t).Error
+	err := r.DB.Create(&todo).Error
 	if err != nil {
 		return err
 	}
@@ -61,9 +68,10 @@ func (r *Repository) GetTodoByID(id int) (*entity.Todo, error) {
 }
 
 // update todo information
-func (r *Repository) PatchTodo(id int, entityTodo *entity.Todo) error {
-	t := NewTodo(entityTodo)
-	err := r.DB.Model(&t).Where("id = ?", id).Update(t).Error
+func (r *Repository) PatchTodo(t *entity.Todo) error {
+	todo := NewTodo(t)
+	err := r.DB.Model(&t).Where("id = ?", t.ID).Update(todo).Error
+	r.DB.Save(&todo)
 	if err != nil {
 		return err
 	}
@@ -72,10 +80,9 @@ func (r *Repository) PatchTodo(id int, entityTodo *entity.Todo) error {
 }
 
 // delete user by id
-func (r *Repository) DeleteTodo(id int) error {
-	var todo entity.Todo
+func (r *Repository) DeleteTodo(todo *entity.Todo) error {
 
-	err := r.DB.First(&todo, id).Error
+	err := r.DB.First(&todo, todo.ID).Error
 	if err != nil {
 		return err
 	}

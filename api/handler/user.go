@@ -101,7 +101,7 @@ func patchUser(service user.UserUseCase) fiber.Handler {
 		}
 		return c.JSON(fiber.Map{
 			"status":  "success",
-			"message": "Users Found",
+			"message": "Users Updated",
 		})
 	}
 }
@@ -119,7 +119,7 @@ func deleteUser(service user.UserUseCase) fiber.Handler {
 		}
 		return c.JSON(fiber.Map{
 			"status":  "success",
-			"message": "Users Found",
+			"message": "Users Deleted",
 		})
 	}
 }

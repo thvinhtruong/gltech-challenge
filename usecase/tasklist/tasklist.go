@@ -2,7 +2,7 @@ package tasklist
 
 import (
 	entity "github.com/thvinhtruong/legoha/entities"
-	repository "github.com/thvinhtruong/legoha/repository/interface"
+	repository "github.com/thvinhtruong/legoha/repository"
 )
 
 type TaskService struct {

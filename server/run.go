@@ -13,13 +13,17 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/thvinhtruong/legoha/api/handler"
+	"github.com/thvinhtruong/legoha/persistent"
 	"github.com/thvinhtruong/legoha/repository"
+	"github.com/thvinhtruong/legoha/usecase/user"
 )
 
 func Run(port int) {
 	// making repo & create database
-	repo := repository.Repository{}
-	repo.Initialize(InitDB())
+	repo := repository.Repository{
+		DB: persistent.GetDB(),
+	}
 
 	app := fiber.New(fiber.Config{
 		AppName:      "Go Todo List",
@@ -44,8 +48,14 @@ func Run(port int) {
 	app.Use(recover.New())
 	app.Use(requestid.New())
 
+	user_repo := repository.NewUserRepository(repo.DB)
+	user_service := user.NewUserService(user_repo)
+
+	api := app.Group("/")
+	handler.NewUserHandler(api, user_service)
+
 	app.All("*", func(c *fiber.Ctx) error {
-		errorMessage := fmt.Sprintf("Route '%s' does not exist in this API!", c.OriginalURL())
+		errorMessage := fmt.Sprintf("Route '%s' does not exist", c.OriginalURL())
 
 		return c.Status(fiber.StatusNotFound).JSON(&fiber.Map{
 			"status":  "fail",

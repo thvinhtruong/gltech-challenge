@@ -1,16 +1,25 @@
 package repository
 
 import (
+	"github.com/jinzhu/gorm"
 	entity "github.com/thvinhtruong/legoha/entities"
 )
 
 func NewUser(user *entity.User) *entity.User {
 	u := entity.User{}
 	u.ID = user.ID
+	u.Name = user.Name
 	u.Username = user.Username
 	u.Password = user.Password
+	u.Role = "user"
 	u.CreatedAt = user.CreatedAt
 	return &u
+}
+
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &Repository{
+		DB: db,
+	}
 }
 
 func (r *Repository) IsUserExists(id int) bool {
@@ -71,10 +80,9 @@ func (r *Repository) GetUserByUsername(username string) (*entity.User, error) {
 }
 
 // update user infor
-func (r *Repository) PatchUser(id int, entityUser *entity.User) error {
-	u := NewUser(entityUser)
-
-	err := r.DB.Model(&u).Where("id = ?", id).Update(u).Error
+func (r *Repository) PatchUser(u *entity.User) error {
+	user := NewUser(u)
+	err := r.DB.Model(&user).Where("id = ?", u.ID).Updates(&user).Error
 	if err != nil {
 		return err
 	}
@@ -83,15 +91,14 @@ func (r *Repository) PatchUser(id int, entityUser *entity.User) error {
 }
 
 // delete user by id
-func (r *Repository) DeleteUser(id int) error {
-	var user entity.User
+func (r *Repository) DeleteUser(u *entity.User) error {
 
-	err := r.DB.First(&user, id).Error
+	err := r.DB.First(&u, u.ID).Error
 	if err != nil {
 		return err
 	}
 
-	err = r.DB.Delete(&user).Error
+	err = r.DB.Delete(&u).Error
 	if err != nil {
 		return err
 	}
@@ -101,7 +108,7 @@ func (r *Repository) DeleteUser(id int) error {
 
 func (r *Repository) LoginUser(u *entity.User) (*entity.User, error) {
 	var user entity.User
-	err := r.DB.Where("username = ? AND password = ?", u.Username, u.assword).First(&user).Error
+	err := r.DB.Where("username = ? AND password = ?", u.Username, u.Password).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

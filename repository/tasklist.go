@@ -1,6 +1,15 @@
 package repository
 
-import entity "github.com/thvinhtruong/legoha/entities"
+import (
+	"github.com/jinzhu/gorm"
+	entity "github.com/thvinhtruong/legoha/entities"
+)
+
+func NewTaskListRepository(db *gorm.DB) TaskListRepository {
+	return &Repository{
+		DB: db,
+	}
+}
 
 func (r *Repository) Assign(tl *entity.TaskList) error {
 	if !r.IsUserExists(tl.UserID) && !r.IsTodoExists(tl.UserID) {
@@ -62,7 +71,7 @@ func (r *Repository) Undo(tl *entity.TaskList) error {
 	return nil
 }
 
-func (r *Repository) Revoke(tl entity.TaskList) error {
+func (r *Repository) Revoke(tl *entity.TaskList) error {
 	err := r.DB.Delete(&tl).Error
 	if err != nil {
 		return err

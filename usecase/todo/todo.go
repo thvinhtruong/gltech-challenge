@@ -2,7 +2,7 @@ package todo
 
 import (
 	entity "github.com/thvinhtruong/legoha/entities"
-	repository "github.com/thvinhtruong/legoha/repository/interface"
+	repository "github.com/thvinhtruong/legoha/repository"
 )
 
 type TodoService struct {
@@ -35,7 +35,7 @@ func (s *TodoService) PatchTodo(id int) (*entity.Todo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = s.todoRepo.PatchTodo(id, todo)
+	err = s.todoRepo.PatchTodo(todo)
 	if err != nil {
 		return nil, err
 	}

@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	entity "github.com/thvinhtruong/legoha/entities"
-	repository "github.com/thvinhtruong/legoha/repository/interface"
+	repository "github.com/thvinhtruong/legoha/repository"
 )
 
 type UserService struct {
@@ -16,7 +16,7 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 }
 
 func (s *UserService) CreateUser(name, username, password string) error {
-	_, err := s.userRepo.GetUserByUserName(username)
+	_, err := s.userRepo.GetUserByUsername(username)
 	if err == nil {
 		return errors.New("user already exists")
 	}
@@ -61,7 +61,7 @@ func (s *UserService) DeleteUser(id int) error {
 }
 
 func (s *UserService) LoginUser(username, password string) (*entity.User, error) {
-	u, err := s.userRepo.GetUserByUserName(username)
+	u, err := s.userRepo.GetUserByUsername(username)
 	if err != nil {
 		return nil, err
 	}

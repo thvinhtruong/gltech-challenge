@@ -9,37 +9,34 @@ import (
 )
 
 type Environment struct {
-	DBHost string
-	DBPort string
-	DBUser string
-	DBPass string
-	DBName string
+	DB_Host string
+	DB_Port string
+	DB_User string
+	DB_Pass string
+	DB_Name string
 }
 
-var Env *Environment
+func (e *Environment) Init() {
+	e.DB_Host = getEnv("DB_HOST")
+	e.DB_Port = getEnv("DB_PORT")
+	e.DB_User = getEnv("DB_USER")
+	e.DB_Pass = getEnv("DB_PASS")
+	e.DB_Name = getEnv("DB_NAME")
+}
 
-func getEnv(key string, required bool) string {
+func getEnv(key string) string {
 	value, ok := os.LookupEnv(key)
-	if !ok && required {
-		log.Fatalf("Missing or invalid environment key: '%s'", key)
+	if !ok {
+		log.Fatalf("Missing or invalid environment key")
 	}
 	return value
 }
 
-func LoadEnvironment() {
-	if Env == nil {
-		Env = new(Environment)
-	}
-	Env.DBHost = getEnv("DB_HOST", true)
-	Env.DBPort = getEnv("DB_PORT", true)
-	Env.DBUser = getEnv("DB_USER", true)
-	Env.DBPass = getEnv("DB_PASS", true)
-	Env.DBName = getEnv("DB_NAME", true)
-}
-
-func LoadEnvironmentFile(file string) {
+func LoadEnvironmentFile(file string) []string {
 	if err := godotenv.Load(file); err != nil {
 		fmt.Printf("Error on load environment file: %s", file)
 	}
-	LoadEnvironment()
+	e := &Environment{}
+	e.Init()
+	return []string{e.DB_Host, e.DB_Port, e.DB_User, e.DB_Pass, e.DB_Name}
 }
