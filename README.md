@@ -19,6 +19,22 @@ Finally, run the application by:
 make run
 ```
 
+## Api Routes
+- [POST] /login
+- [POST] /user/:userId/todo
+- [POST] /assign?userId=?&todoId=?
+- [POST] /revoke?userId=?&todoId=?
+- [POST] /user
+- [GET] /user/:id
+- [PATCH] /user/:id
+- [DELETE] /user/:id
+- [POST] /todo
+- [GET] /todo/:id
+- [PATCH] /todo/:todoid
+- [DELETE] /todo/:todoid
+- [GET] /todo/:todoid/user
+- [POST] /user/:userId/todo/:todoid/done
+
 ## References
 https://eminetto.medium.com/clean-architecture-using-golang-b63587aa5e3f
 https://github.com/percybolmer/ddd-go/tree/clean-architecture
