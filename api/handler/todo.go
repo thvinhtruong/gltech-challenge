@@ -9,11 +9,11 @@ import (
 )
 
 func NewTodoHandler(app fiber.Router, service todo.TodoUseCase) {
-	app.Post("/todo", createTodo(service))
-	app.Get("/todo/all", listTodo(service))
-	app.Get("/todo/:todoId", getTodo(service))
-	app.Patch("/todo/:todoId", patchTodo(service))
-	app.Delete("/todo/:todoId", deleteTodo(service))
+	app.Post("/", createTodo(service))
+	app.Get("/all", listTodo(service))
+	app.Get("/:todoId", getTodo(service))
+	app.Patch("/:todoId", patchTodo(service))
+	app.Delete("/:todoId", deleteTodo(service))
 }
 
 func createTodo(service todo.TodoUseCase) fiber.Handler {
