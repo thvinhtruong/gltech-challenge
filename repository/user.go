@@ -11,7 +11,7 @@ func NewUser(user *entity.User) *entity.User {
 	u.Name = user.Name
 	u.Username = user.Username
 	u.Password = user.Password
-	u.Role = "user"
+	u.Role = user.Role
 	u.CreatedAt = user.CreatedAt
 	return &u
 }
@@ -29,6 +29,7 @@ func (r *Repository) IsUserExists(id int) bool {
 
 // add a user
 func (r *Repository) CreateUser(entityUser *entity.User) error {
+	entityUser.Role = "user"
 	u := NewUser(entityUser)
 
 	err := r.DB.Create(&u).Error

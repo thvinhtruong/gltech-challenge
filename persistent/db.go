@@ -51,5 +51,7 @@ func GetDB() *gorm.DB {
 	db.DropTableIfExists(&entity.TaskList{})
 	db.AutoMigrate(&entity.TaskList{})
 
+	db.Exec("INSERT INTO users(Name, Username, Password, Role) VALUES('admin', 'admin', 'admin', 'admin')")
+
 	return db
 }
