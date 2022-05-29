@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/truongvinh/projects/go_todolist'
+make: Leaving directory `/Users/truongvinh/projects/go_todolist'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
