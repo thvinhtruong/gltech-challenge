@@ -6,11 +6,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
 
-
-# Make data base, printed on Mon May 30 04:21:13 2022
+# Make data base, printed on Tue May 31 13:47:42 2022
 
 # Variables
 
@@ -36,8 +33,8 @@ SHELL = /bin/sh
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
 _ = /usr/bin/make
-# makefile
-MAKEFILE_LIST := 
+# makefile (from `makefile', line 1)
+MAKEFILE_LIST :=  makefile
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -45,17 +42,13 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
-P9K_SSH = 0
-# environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/bl/996slnl94lvfmttq9wfr861c0000gn/T/vscode-ipc-700dcaae-defe-42d0-8385-2bf35ec258ea.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/bl/996slnl94lvfmttq9wfr861c0000gn/T/vscode-ipc-c21231e2-70ac-4a11-9ad3-0fa096d2eead.sock
 # environment
 VSCODE_CWD = /
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # environment
-PATH = /usr/local/bin:/Users/truongvinh/.gem/ruby/2.6.0/bin:/usr/local/mysql/bin:/Users/truongvinh/opt/anaconda3/bin:/Users/truongvinh/opt/anaconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/bin/python3:/Applications/VMware Fusion.app/Contents/Public:/Library/Apple/usr/bin:/Users/truongvinh/go/bin:/Users/truongvinh/go/bin
-# environment
-LSCOLORS = Gxfxcxdxbxegedabagacad
+PATH = /usr/local/Cellar/go/1.17.5/libexec/bin:/usr/bin:/bin:/usr/sbin:/sbin
 # environment
 GOLANG_EXECUTABLE = go
 # environment
@@ -71,11 +64,9 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 UUID = e1765006-b28b-41b7-8d1a-5547e1e204ae
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.CouAhpLsNw/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.ypVpnUKIdv/Listeners
 # automatic
 %F = $(notdir $%)
-# environment
-CONDA_EXE = /Users/truongvinh/opt/anaconda3/bin/conda
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -93,19 +84,13 @@ VSCODE_CODE_CACHE_PATH = /Users/truongvinh/Library/Application Support/Code/Cach
 # environment
 LOGNAME = truongvinh
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
-# environment
-CONDA_PROMPT_MODIFIER = (base) 
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 TELEMETRY_ID = 9b9a689e-d15a-420c-8bf1-58d4820e8f62
-# environment
-ZSH = /Users/truongvinh/.oh-my-zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
-# environment
-CONDA_DEFAULT_ENV = base
 # environment
 XPC_FLAGS = 0x0
 # default
@@ -114,20 +99,14 @@ MAKE = $(MAKE_COMMAND)
 MAKECMDGOALS := all
 # environment
 SHLVL = 1
-# environment
-JAVA_HOME = /Path/to/your/java/home
 # default
 MAKE_VERSION := 3.81
 # environment
 USER = truongvinh
 # makefile
-.DEFAULT_GOAL := 
-# environment
-LESS = -R
+.DEFAULT_GOAL := generate
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# environment
-CONDA_SHLVL = 1
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
 # environment
@@ -151,6 +130,9 @@ XPC_SERVICE_NAME = application.com.microsoft.VSCode.52468302.52468308
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
+ 
+make: *** No rule to make target `all'.  Stop.
+
 RECOMMENDER_API_URL = https://gw.api.openshift.io//api/v2
 # automatic
 +F = $(notdir $+)
@@ -163,31 +145,21 @@ MAKEFILES :=
 # automatic
 <F = $(notdir $<)
 # environment
-PAGER = less
-# environment
 LC_ALL = C
-# environment
-CONDA_PYTHON_EXE = /Users/truongvinh/opt/anaconda3/bin/python
 # automatic
 ^F = $(notdir $^)
 # default
 SUFFIXES := 
-# environment
-_CE_M = 
 # default
 .INCLUDE_DIRS = /usr/local/include
 # environment
 MAKELEVEL := 0
 # environment
-CONDA_PREFIX = /Users/truongvinh/opt/anaconda3
-# environment
-VSCODE_PID = 50447
-# environment
-_CE_CONDA = 
-# environment
 LANG = C
+# environment
+VSCODE_PID = 744
 # variable set hash-table stats:
-# Load=86/1024=8%, Rehash=0, Collisions=4/107=4%
+# Load=72/1024=7%, Rehash=0, Collisions=3/96=3%
 
 # Pattern-specific Variable Values
 
@@ -195,7 +167,7 @@ LANG = C
 
 # Directories
 
-# . (device 16777220, inode 50517862): 14 files, no impossibilities.
+# . (device 16777222, inode 50517862): 14 files, no impossibilities.
 
 # 14 files, no impossibilities in 1 directories.
 
@@ -221,24 +193,22 @@ all:
 #  File has not been updated.
 
 # Not a target:
-Makefile:
-#  A default, MAKEFILES, or -include/sinclude makefile.
+makefile:
 #  Implicit rule search has been done.
-#  File does not exist.
+#  Last modified 2022-04-25 11:24:55
 #  File has been updated.
-#  Failed to be updated.
+#  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-# Not a target:
-makefile:
-#  A default, MAKEFILES, or -include/sinclude makefile.
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has been updated.
-#  Failed to be updated.
-# variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+generate:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `makefile', line 2):
+	touch config.env
+	echo "DB_HOST=localhost \nDB_PORT=3306 \nDB_USER=root \nDB_PASS=root \nDB_NAME=todolist" >> config.env;
+	
 
 # Not a target:
 .DEFAULT:
@@ -246,29 +216,27 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-GNUmakefile:
-#  A default, MAKEFILES, or -include/sinclude makefile.
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has been updated.
-#  Failed to be updated.
-# variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+run:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `makefile', line 5):
+	go run cmd/main.go;
+	
 
 # files hash-table stats:
-# Load=6/1024=1%, Rehash=0, Collisions=0/17=0%
+# Load=6/1024=1%, Rehash=0, Collisions=0/18=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
 
 # No general (`VPATH' variable) search path.
 
-# # of strings in strcache: 0
-# # of strcache buffers: 0
-# strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
-# strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Mon May 30 04:21:13 2022
+# Finished Make data base on Tue May 31 13:47:42 2022
 
  

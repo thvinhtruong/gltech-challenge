@@ -10,7 +10,7 @@ func NewUserRoutes(app fiber.Router, u *handler.UserHandler) {
 	app.Post("/login", loginUser(u))
 	app.Get("/all", findAllUsers(u))
 	app.Get("/:userId", getUserByID(u))
-	app.Put("/:userId", updateUser(u))
+	app.Patch("/:userId", updateUser(u))
 	app.Delete("/:userId", deleteUser(u))
 }
 

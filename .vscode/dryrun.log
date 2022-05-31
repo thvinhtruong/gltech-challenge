@@ -1,6 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/truongvinh/projects/go_todolist'
+touch config.env
+echo "DB_HOST=localhost \nDB_PORT=3306 \nDB_USER=root \nDB_PASS=root \nDB_NAME=todolist" >> config.env;
 make: Leaving directory `/Users/truongvinh/projects/go_todolist'
  
-make: *** No targets specified and no makefile found.  Stop.
-
