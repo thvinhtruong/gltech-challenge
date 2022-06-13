@@ -1,10 +1,11 @@
 package entity
 
-import "github.com/jinzhu/gorm"
+import "time"
 
 type Todo struct {
-	gorm.Model
+	ID          int
 	Title       string
 	Description string
 	Completed   bool
+	CreatedAt   time.Time
 }

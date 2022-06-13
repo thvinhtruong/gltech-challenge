@@ -1,19 +1,11 @@
-package repository
+package gormdb
 
 import (
+	"context"
+
 	"github.com/jinzhu/gorm"
 	entity "github.com/thvinhtruong/legoha/app/domain/entities"
 )
-
-func NewTodo(todo *entity.Todo) *entity.Todo {
-	t := entity.Todo{}
-	t.ID = todo.ID
-	t.Title = todo.Title
-	t.Description = todo.Description
-	t.Completed = todo.Completed
-	t.CreatedAt = todo.CreatedAt
-	return &t
-}
 
 func NewTodoRepository(db *gorm.DB) *Repository {
 	return &Repository{
@@ -21,8 +13,8 @@ func NewTodoRepository(db *gorm.DB) *Repository {
 	}
 }
 
-func (r *Repository) CreateNewTodo(t *entity.Todo) error {
-	todo := NewTodo(t)
+func (r *Repository) CreateNewTodo(ctx context.Context, t entity.Todo) error {
+	todo := newTodo(t)
 
 	err := r.DB.Create(&todo).Error
 	if err != nil {
@@ -33,37 +25,36 @@ func (r *Repository) CreateNewTodo(t *entity.Todo) error {
 }
 
 // get all todo
-func (r *Repository) ListTodos() ([]*entity.Todo, error) {
+func (r *Repository) ListTodos() ([]entity.Todo, error) {
 	var todos []entity.Todo
-
 	err := r.DB.Find(&todos).Error
 	if err != nil {
-		return nil, err
+		return todos, err
 	}
 
-	result := make([]*entity.Todo, 0, len(todos))
+	result := make([]entity.Todo, 0, len(todos))
 	for _, todo := range todos {
-		result = append(result, NewTodo(&todo))
+		result = append(result, newTodo(todo))
 	}
 
 	return result, nil
 }
 
 // get todo by id
-func (r *Repository) GetTodoByID(id int) (*entity.Todo, error) {
+func (r *Repository) GetTodoByID(id int) (entity.Todo, error) {
 	var todo entity.Todo
 
 	err := r.DB.First(&todo, id).Error
 	if err != nil {
-		return nil, err
+		return todo, err
 	}
 
-	return NewTodo(&todo), nil
+	return newTodo(todo), nil
 }
 
 // update todo information
-func (r *Repository) PatchTodo(id int, t *entity.Todo) error {
-	var todo *entity.Todo
+func (r *Repository) PatchTodo(id int, t entity.Todo) error {
+	var todo entity.Todo
 	err := r.DB.First(&todo, id).Error
 	if err != nil {
 		return err
@@ -78,7 +69,7 @@ func (r *Repository) PatchTodo(id int, t *entity.Todo) error {
 }
 
 // delete user by id
-func (r *Repository) DeleteTodo(todo *entity.Todo) error {
+func (r *Repository) DeleteTodo(todo entity.Todo) error {
 
 	err := r.DB.First(&todo, todo.ID).Error
 	if err != nil {

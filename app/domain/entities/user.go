@@ -1,13 +1,12 @@
 package entity
 
-import (
-	"github.com/jinzhu/gorm"
-)
+import "time"
 
 type User struct {
-	gorm.Model
-	Name     string
-	Username string
-	Password string
-	Role     string
+	ID          int
+	Name        string
+	Username    string
+	Password    string
+	Role        string
+	DateCreated time.Time
 }
