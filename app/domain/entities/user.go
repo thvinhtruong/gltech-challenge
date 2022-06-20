@@ -1,11 +1,7 @@
 package entity
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 type User struct {
-	gorm.Model
+	ID       int
 	Name     string
 	Username string
 	Password string
