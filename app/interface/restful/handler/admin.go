@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	tasklistservice "github.com/thvinhtruong/legoha/app/usecase/tasklist/service"
+	tasklistservice "github.com/thvinhtruong/legoha/app/usecase/interactor"
 )
 
 type AdminHandler struct {
