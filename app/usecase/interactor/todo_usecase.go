@@ -1,14 +1,15 @@
-package todoservice
+package interactor
 
 import (
 	entity "github.com/thvinhtruong/legoha/app/domain/entities"
+	repository "github.com/thvinhtruong/legoha/app/usecase/repository"
 )
 
 type TodoService struct {
-	todoRepo TodoRepository
+	todoRepo repository.TodoRepository
 }
 
-func NewTodoService(todoRepo TodoRepository) *TodoService {
+func NewTodoService(todoRepo repository.TodoRepository) *TodoService {
 	return &TodoService{todoRepo: todoRepo}
 }
 

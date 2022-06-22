@@ -1,16 +1,17 @@
-package userusecase
+package interactor
 
 import (
 	"errors"
 
 	entity "github.com/thvinhtruong/legoha/app/domain/entities"
+	repository "github.com/thvinhtruong/legoha/app/usecase/repository"
 )
 
 type UserService struct {
-	userRepo Repository
+	userRepo repository.UserRepository
 }
 
-func NewUserService(userRepo Repository) *UserService {
+func NewUserService(userRepo repository.UserRepository) *UserService {
 	return &UserService{userRepo: userRepo}
 }
 

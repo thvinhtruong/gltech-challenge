@@ -13,12 +13,11 @@ import (
 	"github.com/thvinhtruong/legoha/app/interface/restful/handler"
 	tasklistservice "github.com/thvinhtruong/legoha/app/usecase/tasklist/service"
 	todoservice "github.com/thvinhtruong/legoha/app/usecase/todo/service"
-	userservice "github.com/thvinhtruong/legoha/app/usecase/user/service"
 )
 
 func userStart(app fiber.Router, db *gorm.DB) {
 	repo := repository.NewUserRepository(db)
-	service := userservice.NewUserService(repo)
+	service := userusecase.NewUserService(repo)
 	handler := handler.NewUserHandler(service)
 	api.NewUserRoutes(app, handler)
 }
