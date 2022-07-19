@@ -1,59 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"context"
+	"time"
 
-	"github.com/thvinhtruong/legoha/cmd/core"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/jinzhu/gorm"
-	"github.com/thvinhtruong/legoha/app/api"
-	repository "github.com/thvinhtruong/legoha/app/interface/persistence/rdbms/gormdb"
-	"github.com/thvinhtruong/legoha/app/interface/restful/handler"
-	tasklistservice "github.com/thvinhtruong/legoha/app/usecase/tasklist/service"
-	todoservice "github.com/thvinhtruong/legoha/app/usecase/todo/service"
-	userservice "github.com/thvinhtruong/legoha/app/usecase/user/service"
+	"github.com/gofiber/fiber"
+	"github.com/thvinhtruong/legoha/app/config"
 )
 
-func userStart(app fiber.Router, db *gorm.DB) {
-	repo := repository.NewUserRepository(db)
-	service := userservice.NewUserService(repo)
-	handler := handler.NewUserHandler(service)
-	api.NewUserRoutes(app, handler)
+type application struct {
+	cfg *config.Config
+	app *fiber.App
 }
 
-func todoStart(app fiber.Router, db *gorm.DB) {
-	repo := repository.NewTodoRepository(db)
-	service := todoservice.NewTodoService(repo)
-	handler := handler.NewTodoHandler(service)
-	api.NewTodoRoutes(app, handler)
-}
+type operation func(ctx context.Context) error
 
-func adminStart(app fiber.Router, db *gorm.DB) {
-	repo := repository.NewTaskListRepository(db)
-	service := tasklistservice.NewTaskService(repo)
-	handler := handler.NewAdminHandler(service)
-	api.NewAdminRoute(app, handler)
-}
-
-func Run(port int) {
-	// connect to db
-	db := core.GetDB()
-	defer db.Close()
-
-	// create app
-	app := api.Restful()
-
-	// start api
-	userStart(app.Group("/user"), db)
-	todoStart(app.Group("/todo"), db)
-	adminStart(app.Group("/"), db)
-
-	// Listen to port 3000.
-	log.Fatal(app.Listen(fmt.Sprintf(":%d", port)))
-}
-
-func main() {
-	Run(3000)
+func (a *application) CleanAndShutdown(ctx context.Context, timeout time.Duration, ops map[string]operation) error {
+	return nil
 }

@@ -1,142 +1,116 @@
 package handler
 
 import (
+	"context"
+	"database/sql"
+	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	entity "github.com/thvinhtruong/legoha/app/domain/entities"
-	todoservice "github.com/thvinhtruong/legoha/app/usecase/todo/service"
+	"github.com/jinzhu/copier"
+	"github.com/thvinhtruong/legoha/app/apperror"
+	"github.com/thvinhtruong/legoha/app/interface/restful/presenter"
+	"github.com/thvinhtruong/legoha/app/registry"
+	"github.com/thvinhtruong/legoha/app/usecase/dto"
+	"github.com/thvinhtruong/legoha/pkg/sqlconn"
 )
 
-type TodoHandler struct {
-	service todoservice.TodoUseCase
+func getTodoAccess(db *sql.DB) registry.TodoHook {
+	return registry.BuildTodoHook(db)
 }
 
-func NewTodoHandler(service todoservice.TodoUseCase) *TodoHandler {
-	return &TodoHandler{service: service}
+func TodoHandler(app fiber.Router) {
+	app.Get("/:todoId", getTodoByID)
+	app.Get("/search/todo?title=?&description=?", searchTodo)
+	app.Post("/todo", createTodo)
+	app.Patch("/:todoId", updateTodo)
 }
 
-func (t *TodoHandler) PostNewTodo(c *fiber.Ctx) error {
-	type NewTodoDTO struct {
-		Title       string `json:"title"`
-		Description string `json:"desc"`
-	}
-
-	var todoDTO NewTodoDTO
-	err := c.BodyParser(&todoDTO)
-
+func getTodoByID(c *fiber.Ctx) error {
+	ctx := context.Background()
+	todo_access := getTodoAccess(sqlconn.DB)
+	todo_id, err := strconv.Atoi(c.Params("todoId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status": "error",
-			"error":  err,
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	err = t.service.PostNewTodo(todoDTO.Title, todoDTO.Description)
+	todo, err := todo_access.TodoService.ShowTodoByID(ctx, todo_id)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "new todo created",
-		"error":   nil,
-	})
+	return presenter.Response(c, http.StatusOK, nil, todo)
 }
 
-func (t *TodoHandler) ShowAllTodos(c *fiber.Ctx) error {
-	todos, err := t.service.ShowAllTodos()
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+func searchTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	todo_access := getTodoAccess(sqlconn.DB)
+	title := c.Query("title")
+	description := c.Query("description")
+
+	if len(title) == 0 || len(description) == 0 {
+		return presenter.Response(c, http.StatusOK, apperror.ErrorInputInvalid, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "all todos are shown",
-		"error":   nil,
-		"data":    todos,
-	})
+	var todo_record dto.Todo
+	if title != "" || description != "" {
+		todo_record.Title = title
+		todo_record.Description = description
+	}
+
+	todo, err := todo_access.TodoService.FindTodos(ctx, todo_record)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, todo)
 }
 
-func (t *TodoHandler) ShowTodoByID(c *fiber.Ctx) error {
-	todoId, _ := strconv.Atoi(c.Params("todoId"))
-	todo, err := t.service.ShowTodoByID(todoId)
+func createTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	todo_access := getTodoAccess(sqlconn.DB)
+	data, err := presenter.BindTodoRequest(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "todo is shown",
-		"error":   nil,
-		"data":    todo,
-	})
+	var todo_record dto.Todo
+	err = copier.Copy(todo_record, data)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	err = todo_access.TodoService.PostNewTodo(ctx, todo_record)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (t *TodoHandler) UpdateTodoInfor(c *fiber.Ctx) error {
-	type UpdateTodoDTO struct {
-		Title       string `json:"title"`
-		Description string `json:"desc"`
-	}
-
-	var todoDTO UpdateTodoDTO
-	err := c.BodyParser(&todoDTO)
-
+func updateTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	todo_access := getTodoAccess(sqlconn.DB)
+	todo_id, err := strconv.Atoi(c.Params("todoId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status": "error",
-			"error":  err,
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	todoId, _ := strconv.Atoi(c.Params("todoId"))
-	todo := &entity.Todo{
-		Title:       todoDTO.Title,
-		Description: todoDTO.Description,
-	}
-
-	err = t.service.UpdateTodoInfor(todoId, todo)
+	data, err := presenter.BindTodoRequest(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "todo updated",
-		"error":   nil,
-	})
-}
-
-func (t *TodoHandler) DeleteTodo(c *fiber.Ctx) error {
-	todoId, _ := strconv.Atoi(c.Params("todoId"))
-	err := t.service.DeleteTodo(todoId)
+	var todo_record dto.Todo
+	err = copier.Copy(todo_record, data)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "todo deleted",
-		"error":   nil,
-	})
+	err = todo_access.TodoService.UpdateTodoInfor(ctx, todo_id, todo_record)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }

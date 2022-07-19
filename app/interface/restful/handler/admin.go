@@ -1,185 +1,149 @@
 package handler
 
 import (
+	"context"
+	"database/sql"
+	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	tasklistservice "github.com/thvinhtruong/legoha/app/usecase/tasklist/service"
+	"github.com/thvinhtruong/legoha/app/interface/restful/presenter"
+	"github.com/thvinhtruong/legoha/app/registry"
+	"github.com/thvinhtruong/legoha/app/usecase/dto"
+	"github.com/thvinhtruong/legoha/pkg/sqlconn"
 )
 
-type AdminHandler struct {
-	service tasklistservice.TaskListUseCase
+func getAdminAccess(db *sql.DB) registry.AdminHook {
+	return registry.BuildAdminHook(db)
 }
 
-func NewAdminHandler(service tasklistservice.TaskListUseCase) *AdminHandler {
-	return &AdminHandler{
-		service: service,
-	}
+func AdminHandler(app fiber.Router) {
+	app.Post("/assign?userId=?&todoId=?", assignUserToTodo)
+	app.Delete("/revoke?userId=?&todoId=?", revokeUserFromTodo)
+	app.Patch("/user/:userId/todo/:todoid/done", completedUserTodo)
+	app.Patch("/user/:userId/todo/:todoid/undo", undoUserTodo)
+	app.Delete("/todo/delete?todoId=?", deleteTodo)
+	app.Delete("/user/delete?userId=?", deleteUser)
 }
 
-func (a *AdminHandler) AssignTask(c *fiber.Ctx) error {
-	userId, err := strconv.Atoi(c.Query("userId"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
-	}
-
-	todoId, err := strconv.Atoi(c.Query("todoId"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
-	}
-
-	err = a.service.AssignTask(userId, todoId)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
-	}
-
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "task assigned",
-		"error":   nil,
-	})
-}
-
-func (a *AdminHandler) CompletedTask(c *fiber.Ctx) error {
+func assignUserToTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
 	userId, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+	todoId, err := strconv.Atoi(c.Params("todoId"))
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
+	var record dto.TodoUser
+	record.UserID = userId
+	record.TodoID = todoId
+
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.AssignTask(ctx, record)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
+}
+
+func revokeUserFromTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	userId, err := strconv.Atoi(c.Params("userId"))
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+	todoId, err := strconv.Atoi(c.Params("todoId"))
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.RevokeTask(ctx, userId, todoId)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
+}
+
+func completedUserTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	userId, err := strconv.Atoi(c.Params("userId"))
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
 	todoId, err := strconv.Atoi(c.Params("todoid"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	err = a.service.CompletedTask(userId, todoId)
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.CompletedTask(ctx, userId, todoId)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "task completed",
-		"error":   nil,
-	})
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (a *AdminHandler) UndoTask(c *fiber.Ctx) error {
+func undoUserTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
 	userId, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
-
 	todoId, err := strconv.Atoi(c.Params("todoid"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	err = a.service.UndoTask(userId, todoId)
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.UndoTask(ctx, userId, todoId)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "task undone",
-		"error":   nil,
-	})
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (a *AdminHandler) RevokeTask(c *fiber.Ctx) error {
-	userId, err := strconv.Atoi(c.Query("userId"))
+func deleteTodo(c *fiber.Ctx) error {
+	ctx := context.Background()
+	todoId, err := strconv.Atoi(c.Params("todoId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	todoId, err := strconv.Atoi(c.Query("todoId"))
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.DeleteTodo(ctx, todoId)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	err = a.service.RevokeTask(userId, todoId)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
-	}
-
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "task revoked",
-		"error":   nil,
-	})
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (a *AdminHandler) ListUserTask(c *fiber.Ctx) error {
+func deleteUser(c *fiber.Ctx) error {
+	ctx := context.Background()
 	userId, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	tasks, err := a.service.ListUsersTasks(userId)
+	db := sqlconn.DB
+	admin_access := getAdminAccess(db)
+	err = admin_access.AdminService.DeleteUser(ctx, userId)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(&fiber.Map{
-		"status":  "success",
-		"message": "tasks is shown for user " + c.Params("userId"),
-		"error":   nil,
-		"data":    tasks,
-	})
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
