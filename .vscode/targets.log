@@ -6,11 +6,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
 
-
-# Make data base, printed on Mon Jun 13 14:16:11 2022
+# Make data base, printed on Tue Jul 19 13:26:26 2022
 
 # Variables
 
@@ -19,13 +16,7 @@ make: *** No rule to make target `all'.  Stop.
 # automatic
 ?F = $(notdir $?)
 # environment
-ELECTRON_NO_ATTACH_CONSOLE = 1
-# environment
 PROVIDE_FULLSTACK_ACTION = true
-# environment
-LC_CTYPE = UTF-8
-# environment
-VSCODE_LOG_NATIVE = false
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -45,15 +36,11 @@ MAKEFILE_LIST :=  makefile
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-VSCODE_VERBOSE_LOGGING = true
-# environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
 P9K_SSH = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/bl/996slnl94lvfmttq9wfr861c0000gn/T/vscode-ipc-720456d1-20cf-4a81-8a34-c77503e4a566.sock
-# environment
-VSCODE_CWD = /Users/truongvinh/projects/go_todolist
+VSCODE_CWD = /
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # environment
@@ -67,21 +54,17 @@ THREE_SCALE_USER_TOKEN = 207c527cfc2a6b8dcf4fa43ad7a976da
 # environment
 GOPATH = /Users/truongvinh/go
 # environment
-VSCODE_LOG_STACK = false
-# environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
 UUID = e1765006-b28b-41b7-8d1a-5547e1e204ae
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.YLDpjBDaTO/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.zcKYpeCdGB/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
 CONDA_EXE = /Users/truongvinh/opt/anaconda3/bin/conda
-# environment
-VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /Users/truongvinh/projects/go_todolist
 # environment
@@ -93,9 +76,7 @@ HOME = /Users/truongvinh
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CLI = 1
-# environment
-VSCODE_CODE_CACHE_PATH = /Users/truongvinh/Library/Application Support/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
+VSCODE_CODE_CACHE_PATH = /Users/truongvinh/Library/Application Support/Code/CachedData/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
 # environment
 LOGNAME = truongvinh
 # environment
@@ -114,14 +95,12 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 CONDA_DEFAULT_ENV = base
 # environment
 XPC_FLAGS = 0x0
-# environment
-COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
 # environment
-LC_TERMINAL = iTerm2
-# environment
-SHLVL = 3
+SHLVL = 1
 # environment
 JAVA_HOME = /Path/to/your/java/home
 # default
@@ -130,10 +109,6 @@ MAKE_VERSION := 3.81
 USER = truongvinh
 # makefile
 .DEFAULT_GOAL := generate
-# default
-MAKECMDGOALS := all
-# environment
-TERM_SESSION_ID = w0t0p0:0D4BA9EF-3464-4261-8EF3-9B8F4C6ACC3B
 # environment
 LESS = -R
 # automatic
@@ -144,8 +119,6 @@ CONDA_SHLVL = 1
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
 # environment
 UTM_SOURCE = vscode
-# environment
-TERM_PROGRAM = iTerm.app
 # default
 .VARIABLES := 
 # environment
@@ -153,7 +126,9 @@ TMPDIR = /var/folders/bl/996slnl94lvfmttq9wfr861c0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/truongvinh/Library/Application Support/Code/1.68.0-main.sock
+VSCODE_IPC_HOOK = /Users/truongvinh/Library/Application Support/Code/1.69.1-main.sock
+# environment
+MallocNanoZone = 0
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -161,21 +136,13 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-TERM_PROGRAM_VERSION = 3.3.12
-# environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.54026474.54026480.B5E00613-DC1A-4766-B29B-CBB9D0B4EBC6
-# environment
-LC_TERMINAL_VERSION = 3.3.12
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.56682392.56682398
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
 RECOMMENDER_API_URL = https://gw.api.openshift.io//api/v2
 # automatic
 +F = $(notdir $+)
-# environment
-ITERM_SESSION_ID = w0t0p0:0D4BA9EF-3464-4261-8EF3-9B8F4C6ACC3B
-# environment
-COLORFGBG = 15;0
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
 # environment
@@ -185,15 +152,11 @@ MAKEFILES :=
 # automatic
 <F = $(notdir $<)
 # environment
-ITERM_PROFILE = Default
-# environment
 PAGER = less
 # environment
 LC_ALL = C
 # environment
 CONDA_PYTHON_EXE = /Users/truongvinh/opt/anaconda3/bin/python
-# environment
-P9K_TTY = old
 # automatic
 ^F = $(notdir $^)
 # default
@@ -207,17 +170,13 @@ MAKELEVEL := 0
 # environment
 CONDA_PREFIX = /Users/truongvinh/opt/anaconda3
 # environment
-TERM = xterm-256color
-# environment
-_P9K_TTY = /dev/ttys000
-# environment
-VSCODE_PID = 12478
+VSCODE_PID = 5510
 # environment
 _CE_CONDA = 
 # environment
 LANG = C
 # variable set hash-table stats:
-# Load=101/1024=10%, Rehash=0, Collisions=7/125=6%
+# Load=82/1024=8%, Rehash=0, Collisions=4/106=4%
 
 # Pattern-specific Variable Values
 
@@ -225,9 +184,9 @@ LANG = C
 
 # Directories
 
-# . (device 16777224, inode 50517862): 16 files, no impossibilities.
+# . (device 16777223, inode 50517862): 17 files, no impossibilities.
 
-# 16 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -253,6 +212,7 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
+ 
 #  Last modified 2022-04-25 11:24:55
 #  File has been updated.
 #  Successfully updated.
@@ -295,6 +255,8 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Mon Jun 13 14:16:11 2022
+# Finished Make data base on Tue Jul 19 13:26:26 2022
 
  
+make: *** No rule to make target `all'.  Stop.
+

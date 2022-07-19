@@ -1,166 +1,139 @@
 package handler
 
 import (
+	"context"
+	"database/sql"
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	entity "github.com/thvinhtruong/legoha/app/domain/entities"
-	userservice "github.com/thvinhtruong/legoha/app/usecase/user/service"
+	"github.com/jinzhu/copier"
+	"github.com/thvinhtruong/legoha/app/interface/restful/presenter"
+	"github.com/thvinhtruong/legoha/app/registry"
+	"github.com/thvinhtruong/legoha/app/usecase/dto"
+	"github.com/thvinhtruong/legoha/pkg/hasher"
+	"github.com/thvinhtruong/legoha/pkg/sqlconn"
 )
 
-type UserHandler struct {
-	service userservice.UserUseCase
+func getUserAcess(db *sql.DB) registry.UserHook {
+	return registry.BuildUserHook(db)
 }
 
-func NewUserHandler(service userservice.UserUseCase) *UserHandler {
-	return &UserHandler{service: service}
+func UserHandler(app fiber.Router) {
+	app.Post("/register", registerUser)
+	app.Get("/:userId", getUserByID)
+	app.Patch("/:userId", updateUser)
+	app.Patch("/password/:userId", changePassword)
 }
 
-func (u *UserHandler) RegisterUser(c *fiber.Ctx) error {
-	type RegisterDTO struct {
-		Name     string `json:"name"`
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	var registerDTO RegisterDTO
-	err := c.BodyParser(&registerDTO)
-
+func registerUser(c *fiber.Ctx) error {
+	ctx := context.Background()
+	data, err := presenter.BindUserRequest(c, false)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status": "error",
-			"error":  err,
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	user := &entity.User{Name: registerDTO.Name, Username: registerDTO.Username, Password: registerDTO.Password}
-	err = u.service.RegisterUser(user.Name, user.Username, user.Password)
+	var user_record dto.User
+	err = copier.Copy(user_record, data)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "Users Created",
-	})
+	password, err := hasher.HashPassword(user_record.Password)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
 
+	user_record.Password = password
+
+	db := sqlconn.DB
+	user_access := getUserAcess(db)
+	err = user_access.UserService.RegisterUser(ctx, user_record)
+	if err != nil {
+		log.Println("Error: ", err)
+		return presenter.Response(c, http.StatusOK, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (u *UserHandler) FindAllUsers(c *fiber.Ctx) error {
-	users, err := u.service.FindAllUsers()
+func getUserByID(c *fiber.Ctx) error {
+	ctx := context.Background()
+	userID, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "Users Found",
-		"data":    users,
-	})
+
+	db := sqlconn.DB
+	user_access := getUserAcess(db)
+	user, err := user_access.UserService.FindUserByID(ctx, userID)
+	if err != nil {
+		return presenter.Response(c, http.StatusOK, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, user)
 }
 
-func (u *UserHandler) FindUserById(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("userId"))
-	user, err := u.service.FindUserById(id)
+func updateUser(c *fiber.Ctx) error {
+	ctx := context.Background()
+	userID, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "User Found",
-		"data":    user,
-	})
+
+	data, err := presenter.BindUserRequest(c, true)
+	if err != nil {
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
+	}
+
+	// only update name and username
+	user_record := dto.User{
+		Name:     data.Name,
+		Username: data.Username,
+	}
+
+	db := sqlconn.DB
+	user_access := getUserAcess(db)
+	err = user_access.UserService.PatchUserInfor(ctx, userID, user_record)
+	if err != nil {
+		return presenter.Response(c, http.StatusOK, err, nil)
+	}
+
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
 
-func (u *UserHandler) UpdateUserInfor(c *fiber.Ctx) error {
-	type UpdateDTO struct {
-		Name     string `json:"name"`
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	var updateDTO UpdateDTO
-	err := c.BodyParser(&updateDTO)
-
+func changePassword(c *fiber.Ctx) error {
+	ctx := context.Background()
+	userID, err := strconv.Atoi(c.Params("userId"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status": "error",
-			"error":  err,
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
-	id, _ := strconv.Atoi(c.Params("userId"))
-	user := &entity.User{Name: updateDTO.Name, Username: updateDTO.Username, Password: updateDTO.Password}
-	err = u.service.PatchUserInfor(id, user)
+
+	data, err := presenter.BindUserRequest(c, true)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "User Updated",
-	})
-}
-
-func (u *UserHandler) DeleteUser(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("userId"))
-	err := u.service.DeleteUser(id)
+	var user_record dto.User
+	user_record.Password = data.Password
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "Users Deleted",
-	})
-}
-
-func (u *UserHandler) LoginUser(c *fiber.Ctx) error {
-	type LoginDTO struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	var loginDTO LoginDTO
-	err := c.BodyParser(&loginDTO)
-
+	new_password, err := hasher.HashPassword(user_record.Password)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status": "error",
-			"error":  err,
-		})
+		return presenter.Response(c, http.StatusInternalServerError, err, nil)
 	}
 
-	user, err := u.service.LoginUser(loginDTO.Username, loginDTO.Password)
+	user_record.Password = new_password
+
+	db := sqlconn.DB
+	user_access := getUserAcess(db)
+	err = user_access.UserService.PatchUserInfor(ctx, userID, user_record)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"status":       "error",
-			"error_detail": err,
-			"error":        err.Error(),
-		})
+		return presenter.Response(c, http.StatusOK, err, nil)
 	}
 
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "User Logged in",
-		"data":    user,
-	})
+	return presenter.Response(c, http.StatusOK, nil, nil)
 }
