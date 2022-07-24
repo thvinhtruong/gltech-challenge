@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/thvinhtruong/legoha/app/config"
 )
 
@@ -13,8 +15,8 @@ var (
 	DB *sql.DB
 )
 
-func Init() error {
-	DB, err := OpenConnection(*config.GetConfig())
+func Init(cfg config.Config) error {
+	DB, err := OpenConnection(cfg)
 	if err != nil {
 		return err
 	}

@@ -14,7 +14,7 @@ func NewTodoService(todoRepo repository.TodoRepository) *TodoService {
 }
 
 func (s *TodoService) PostNewTodo(title, description string) error {
-	todo := &entity.Todo{Title: title, Description: description, Completed: false}
+	todo := &entity.Todo{Title: title, Description: description}
 	err := s.todoRepo.CreateNewTodo(todo)
 	if err != nil {
 		return err
@@ -32,18 +32,6 @@ func (s *TodoService) ShowTodoByID(id int) (*entity.Todo, error) {
 
 func (s *TodoService) UpdateTodoInfor(id int, t *entity.Todo) error {
 	err := s.todoRepo.PatchTodo(id, t)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s *TodoService) DeleteTodo(id int) error {
-	todo, err := s.todoRepo.GetTodoByID(id)
-	if err != nil {
-		return err
-	}
-	err = s.todoRepo.DeleteTodo(todo)
 	if err != nil {
 		return err
 	}
