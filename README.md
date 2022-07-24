@@ -1,6 +1,6 @@
-# Legoha - Go Simple and Minimal Todolist API
+# Go Simple and Minimal Todolist API Follow Clean Arch
 
-Legoha is a simple and minimal Todolist api using Golang with Gorm and Fiber. Followed by Clean Architecture.
+Challenge I did for technical analysis of GL Tech team. Simple todolist in edutech field helps children and teacher to manage their homework or mission that assigned for children. There are many things that is currently in development. Contribution is always welcomed and very precious to me.
 
 ## How to run ?
 
@@ -20,11 +20,10 @@ make run
 ```
 
 ## Api Routes
-- [POST] /login
-- [POST] /user/:userId/todo
+- [POST] /login (missing)
+- [POST] /user/register
 - [POST] /assign?userId=?&todoId=?
 - [POST] /revoke?userId=?&todoId=?
-- [POST] /user
 - [GET] /user/:id
 - [PATCH] /user/:id
 - [DELETE] /user/:id
