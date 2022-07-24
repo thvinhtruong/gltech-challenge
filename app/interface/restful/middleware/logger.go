@@ -17,7 +17,7 @@ var (
 
 func saveLogFile(name string) *os.File {
 	// create and save log based on current day
-	path := "./log/" + name + ".log"
+	path := "app/interface/restful/middleware/log/" + name + ".log"
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +30,7 @@ func LoggerMiddleware() fiber.Handler {
 		t := time.Now()
 		name := t.Format("2006-01-02 15:04:05")
 		logger_middleware = logger.New(logger.Config{
-			Format:     "method=${method}, uri=${uri}, status=${status}, latency=${latency}, remote_ip=${remoteIP}, user_agent=${userAgent}",
+			Format:     "method=${method}, uri=${uri}, status=${status}, latency=${latency}, remote_ip=${remoteIP}, user_agent=${userAgent} \n",
 			TimeFormat: "02-Jan-2006 15:04:05",
 			TimeZone:   "local",
 			Output:     saveLogFile(name),

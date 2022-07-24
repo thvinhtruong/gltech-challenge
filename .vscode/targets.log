@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Tue Jul 19 13:26:26 2022
+# Make data base, printed on Sun Jul 24 11:51:57 2022
 
 # Variables
 
@@ -60,7 +60,7 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 UUID = e1765006-b28b-41b7-8d1a-5547e1e204ae
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.zcKYpeCdGB/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.UqzPAB7ZOP/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -76,7 +76,7 @@ HOME = /Users/truongvinh
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/truongvinh/Library/Application Support/Code/CachedData/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
+VSCODE_CODE_CACHE_PATH = /Users/truongvinh/Library/Application Support/Code/CachedData/3b889b090b5ad5793f524b5d1d39fda662b96a2a
 # environment
 LOGNAME = truongvinh
 # environment
@@ -126,7 +126,7 @@ TMPDIR = /var/folders/bl/996slnl94lvfmttq9wfr861c0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/truongvinh/Library/Application Support/Code/1.69.1-main.sock
+VSCODE_IPC_HOOK = /Users/truongvinh/Library/Application Support/Code/1.69.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -136,7 +136,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.56682392.56682398
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.56980356.56980362
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -170,7 +170,7 @@ MAKELEVEL := 0
 # environment
 CONDA_PREFIX = /Users/truongvinh/opt/anaconda3
 # environment
-VSCODE_PID = 5510
+VSCODE_PID = 909
 # environment
 _CE_CONDA = 
 # environment
@@ -184,7 +184,7 @@ LANG = C
 
 # Directories
 
-# . (device 16777223, inode 50517862): 17 files, no impossibilities.
+# . (device 16777224, inode 50517862): 17 files, no impossibilities.
 
 # 17 files, no impossibilities in 1 directories.
 
@@ -212,7 +212,6 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
- 
 #  Last modified 2022-04-25 11:24:55
 #  File has been updated.
 #  Successfully updated.
@@ -255,7 +254,7 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Tue Jul 19 13:26:26 2022
+# Finished Make data base on Sun Jul 24 11:51:57 2022
 
  
 make: *** No rule to make target `all'.  Stop.

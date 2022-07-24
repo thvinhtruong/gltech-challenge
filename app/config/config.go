@@ -5,14 +5,8 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"sync"
 
 	"github.com/joho/godotenv"
-)
-
-var (
-	once      sync.Once
-	singleton *Config
 )
 
 type Config struct {
@@ -47,19 +41,6 @@ type Config struct {
 	// API
 	API_Version string
 	API_Domain  string
-}
-
-// SetConfig to set configuration of service.
-func SetConfig(cfg *Config) *Config {
-	once.Do(func() {
-		singleton = cfg
-	})
-	return singleton
-}
-
-// GetConfig gets the instance of singleton
-func GetConfig() *Config {
-	return singleton
 }
 
 func (e *Config) ServerConn() {
@@ -112,8 +93,8 @@ func ReadEnvFile(path string) Config {
 		fmt.Printf("Error on load environment file: %s", path)
 	}
 	e := Config{}
-	e.ServerConn()
+	//e.ServerConn()
 	e.DBConn()
-	e.CookieConfig()
+	//e.CookieConfig()
 	return e
 }

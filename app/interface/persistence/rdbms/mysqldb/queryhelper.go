@@ -14,12 +14,12 @@ import (
 
 // user
 var (
-	sql_insert_user    = `INSERT INTO user (name, username, password, role, created_at) VALUES (?, ?, ?, ?, ?)`
-	sql_update_user    = `UPDATE user SET name = ?, username = ?, password = ?, updated_at = ? WHERE id = ?`
-	sql_delete_user    = `DELETE FROM user WHERE id = ?`
-	sql_query_name     = `SELECT name, username, created_at FROM user WHERE name LIKE ?`
-	sql_query_username = `SELECT name, username, created_at FROM user WHERE username LIKE ?`
-	sql_query_userid   = `SELECT name, username, created_at FROM user WHERE id = ?`
+	sql_insert_user    = `INSERT INTO users (name, username, password, role, created_at) VALUES (?, ?, ?, ?, ?)`
+	sql_update_user    = `UPDATE users SET name = ?, username = ?, password = ?, updated_at = ? WHERE id = ?`
+	sql_delete_user    = `DELETE FROM users WHERE id = ?`
+	sql_query_name     = `SELECT name, username, created_at FROM users WHERE name LIKE ?`
+	sql_query_username = `SELECT name, username, created_at FROM users WHERE username LIKE ?`
+	sql_query_userid   = `SELECT name, username, created_at FROM users WHERE id = ?`
 )
 
 // todo
